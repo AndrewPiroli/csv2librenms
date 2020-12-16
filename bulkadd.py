@@ -62,7 +62,7 @@ if __name__ == "__main__":
                 "cryptoalgo": row["v3cryptoalgo"],
             }
         else:
-            print("FATAL ERROR: snmp version not recognized")
+            print(f"FATAL ERROR: snmp version not recognized {row}")
             continue
         device_info.update({"hostname": row["hostname"], "version": row["version"]})
         device_add(device_info)
