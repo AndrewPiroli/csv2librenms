@@ -1,4 +1,4 @@
 hostname,version,v1v2community,v3authlevel,v3authname,v3authpass,v3authalgo,v3cryptopass,v3cryptoalgo
-example1.example.org,v1,ropublic,a,a,a,a,a,a
-example2.example.org,v2c,ropublic,a,a,a,a,a,a
+example1.example.org,v1,ropublic,,,,,,
+example2.example.org,v2c,ropublic,,,,,,
 example3.example.org,v3,,authPriv,admin,P@ssw0rd,MD5,$ecr3t,AES
