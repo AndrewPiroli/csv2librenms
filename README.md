@@ -19,3 +19,5 @@ them via the LibreNMS webgui.
 - **v3authalgo**: SNMPv3 authentication algorithm (MD5, SHA)
 - **v3cryptopass**: SNMPv3 crypto password
 - **v3cryptopass**: SNMPv3 crypto algorithm (AES, DES)
+
+If version is set to v1 or v2c, all v3 options are ignored, they may be left blank or placeholders inserted. If version v3 is selected, v1v2commmunity is ignored. If version does not match v1, v2c, or v3 the entire row is discarded.
