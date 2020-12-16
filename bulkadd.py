@@ -3,6 +3,7 @@ import math
 import sys
 import csv
 import http.client
+import json
 
 # Setup Requests Headers
 headers = {
@@ -16,15 +17,14 @@ headers = {
 
 
 def device_add(add_request):
-    api_url = f"{config.librenms_ipaddress}/api/v0/devices"
     connection = (
-        http.client.HTTPSConnection(api_url)
+        http.client.HTTPSConnection(config.librenms_ipaddress)
         if config.use_https
-        else http.client.HTTPConnection(api_url)
+        else http.client.HTTPConnection(config.librenms_ipaddress)
     )
-    connection.request("POST", "", add_request, headers)
+    connection.request("POST", "/api/v0/devices", json.dumps(add_request), headers)
     response = connection.getresponse()
-    data = str(response.data())
+    data = str(response.read())
     print(f"{response.status} {response.reason} : {data}")
 
 
