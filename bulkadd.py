@@ -13,19 +13,26 @@ headers = {
     "Connection": "keep-alive",
 }
 
+
 def mk_connection():
     connection = None
     connector = HTTPSConnection if config.use_https else HTTPSConnection
     if config.use_https and config.disable_tls_cert_check:
         try:
             import ssl
-            connection = connector(config.librenms_ipaddress, context=ssl._create_unverified_context())
+
+            connection = connector(
+                config.librenms_ipaddress, context=ssl._create_unverified_context()
+            )
         except ImportError:
-            print("SSL module not available, it must be built into python to support your requested operation")
+            print(
+                "SSL module not available, it must be built into python to support your requested operation"
+            )
             connection = connector(config.librenms_ipaddress)
     else:
         connection = connector(config.librenms_ipaddress)
     return connection
+
 
 def device_add(add_request):
     connection = mk_connection()
@@ -50,18 +57,22 @@ if __name__ == "__main__":
     for row in process_csv("data/bulkadd.csv"):
         device_info = {"hostname": row["hostname"], "version": row["version"]}
         if row["version"] in ("v1", "v2c"):
-            device_info.update({
-                "community": row["v1v2community"],
-            })
+            device_info.update(
+                {
+                    "community": row["v1v2community"],
+                }
+            )
         elif row["version"] == "v3":
-            device_info.update({
-                "authlevel": row["v3authlevel"],
-                "authname": row["v3authname"],
-                "authpass": row["v3authpass"],
-                "authalgo": row["v3authalgo"],
-                "cryptopass": row["v3cryptopass"],
-                "cryptoalgo": row["v3cryptoalgo"],
-            })
+            device_info.update(
+                {
+                    "authlevel": row["v3authlevel"],
+                    "authname": row["v3authname"],
+                    "authpass": row["v3authpass"],
+                    "authalgo": row["v3authalgo"],
+                    "cryptopass": row["v3cryptopass"],
+                    "cryptoalgo": row["v3cryptoalgo"],
+                }
+            )
         else:
             print(f"FATAL ERROR: snmp version not recognized {row}")
             continue
