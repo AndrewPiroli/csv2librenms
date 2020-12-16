@@ -51,7 +51,6 @@ if __name__ == "__main__":
         if row["version"] in ("v1", "v2c"):
             device_info = {
                 "community": row["v1v2community"],
-                "version": row["version"],
             }
         elif row["version"] == "v3":
             device_info = {
