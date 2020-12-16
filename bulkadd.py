@@ -1,8 +1,6 @@
 import config
-import math
-import sys
 import csv
-import http.client
+from http.client import HTTPConnection, HTTPSConnection
 import json
 
 # Setup Requests Headers
@@ -15,13 +13,22 @@ headers = {
     "Connection": "keep-alive",
 }
 
+def mk_connection():
+    connection = None
+    connector = HTTPSConnection if config.use_https else HTTPSConnection
+    if config.use_https and config.disable_tls_cert_check:
+        try:
+            import ssl
+            connection = connector(config.librenms_ipaddress, context=ssl._create_unverified_context())
+        except ImportError:
+            print("SSL module not available, it must be built into python to support your requested operation")
+            connection = connector(config.librenms_ipaddress)
+    else:
+        connection = connector(config.librenms_ipaddress)
+    return connection
 
 def device_add(add_request):
-    connection = (
-        http.client.HTTPSConnection(config.librenms_ipaddress)
-        if config.use_https
-        else http.client.HTTPConnection(config.librenms_ipaddress)
-    )
+    connection = mk_connection()
     connection.request("POST", "/api/v0/devices", json.dumps(add_request), headers)
     response = connection.getresponse()
     connection.close()
