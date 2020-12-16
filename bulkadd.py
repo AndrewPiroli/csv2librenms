@@ -16,7 +16,7 @@ headers = {
 
 
 def device_add(add_request):
-    api_url = f"{config.request_type}://{config.librenms_ipaddress}/api/v0/devices"
+    api_url = f"{config.librenms_ipaddress}/api/v0/devices"
     connection = (
         http.client.HTTPSConnection(api_url)
         if config.use_https
