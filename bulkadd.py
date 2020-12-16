@@ -48,21 +48,21 @@ def process_csv(csvfile):
 
 if __name__ == "__main__":
     for row in process_csv("data/bulkadd.csv"):
+        device_info = {"hostname": row["hostname"], "version": row["version"]}
         if row["version"] in ("v1", "v2c"):
-            device_info = {
+            device_info.update({
                 "community": row["v1v2community"],
-            }
+            })
         elif row["version"] == "v3":
-            device_info = {
+            device_info.update({
                 "authlevel": row["v3authlevel"],
                 "authname": row["v3authname"],
                 "authpass": row["v3authpass"],
                 "authalgo": row["v3authalgo"],
                 "cryptopass": row["v3cryptopass"],
                 "cryptoalgo": row["v3cryptoalgo"],
-            }
+            })
         else:
             print(f"FATAL ERROR: snmp version not recognized {row}")
             continue
-        device_info.update({"hostname": row["hostname"], "version": row["version"]})
         device_add(device_info)
