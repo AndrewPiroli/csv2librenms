@@ -1,7 +1,4 @@
-hostname,os,sysname,hardware,location_id,ro
-192.168.2.40,ciscowap,"Bldg 123, Room 1",AIR-LAP1142N-A-K9,721,
-192.168.2.41,ciscowap,"Bldg 123, Room 2",AIR-LAP1142N-A-K9,721,
-192.168.2.42,ciscowap,"Bldg 123, Room 3",AIR-LAP1142N-A-K9,721,
-192.168.2.43,ciscowap,"Bldg 123, Room 4",AIR-LAP1142N-A-K9,721,
-192.168.2.44,ciscowap,"Bldg 123, Room 5",AIR-LAP1142N-A-K9,721,
-192.168.2.2,,,,,publicsnmpstring
+hostname,version,v1v2community,v3authlevel,v3authname,v3authpass,v3authalgo,v3cryptopass,v3cryptoalgo
+example1.example.org,v1,ropublic,a,a,a,a,a,a
+example2.example.org,v2c,ropublic,a,a,a,a,a,a
+example3.example.org,v3,,authPriv,admin,P@ssw0rd,MD5,$ecr3t,AES
