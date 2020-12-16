@@ -24,6 +24,7 @@ def device_add(add_request):
     )
     connection.request("POST", "/api/v0/devices", json.dumps(add_request), headers)
     response = connection.getresponse()
+    connection.close()
     data = str(response.read())
     print(f"{response.status} {response.reason} : {data}")
 
