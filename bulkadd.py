@@ -36,10 +36,10 @@ def mk_connection():
 
 def device_add(add_request):
     connection = mk_connection()
-    connection.request("POST", "/api/v0/devices", json.dumps(add_request), headers)
+    connection.request("POST", config.api_endpoint, json.dumps(add_request), headers)
     response = connection.getresponse()
-    connection.close()
     data = str(response.read())
+    connection.close()
     print(f"{response.status} {response.reason} : {data}")
 
 
