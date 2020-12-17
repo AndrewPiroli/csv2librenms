@@ -10,7 +10,7 @@ them via the LibreNMS webgui.
 **Direction: python3 ./bulkadd.py**
 
 #### CSV - SNMP Settings
-- **Hostname**: IP/Hostname of device you want to add
+- **hostname**: IP/Hostname of device you want to add
 - **version**: SNMP version of the device. Acceptable values: v1 v2c v3
 - **v1v2community**: SNMP community for v1 or v2c
 - **v3authlevel**: SNMPv3 authentication level (noAuthNoPriv, authNoPriv, authPriv)
