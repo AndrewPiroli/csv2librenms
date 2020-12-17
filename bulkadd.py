@@ -16,12 +16,13 @@ headers = {
 
 def mk_connection():
     connection = None
-    connector = HTTPSConnection if config.use_https else HTTPSConnection
+    connector = HTTPSConnection if config.use_https else HTTPConnection
     if config.use_https and config.disable_tls_cert_check:
         try:
             import ssl
 
-            connection = connector(
+            # You seriously think you know what you're talking about pylint? This is literally the shittiest linter in existence. Try to use at least half a braincell before you analyze code
+            connection = connector(  # pylint: disable=unexpected-keyword-arg
                 config.librenms_ipaddress, context=ssl._create_unverified_context()
             )
         except ImportError:
