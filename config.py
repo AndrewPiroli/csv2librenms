@@ -4,7 +4,7 @@ use_https = False
 disable_tls_cert_check = False
 debug_mode = False
 
-#Do not edit below this line
+# Do not edit below this line
 api_endpoint = "/api/v0/devices"
 if debug_mode:
     use_https = True
