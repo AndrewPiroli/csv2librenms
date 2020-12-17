@@ -45,8 +45,15 @@ def device_add(add_request):
 
 def process_csv(csvfile):
     with open(csvfile) as device_list:
-        dialect = csv.Sniffer().sniff(device_list.read())
-        device_list.seek(0)
+        try:
+            contents = [next(device_list) for _ in range(2)]  # read first 2 lines
+        except StopIteration:  # The file has less than 2 lines...
+            pass
+        finally:
+            contents = "".join(contents)
+            device_list.seek(0)
+        dialect = csv.Sniffer().sniff(contents)
+        del contents
         reader = csv.reader(device_list, dialect)
         header = next(reader)
         for entry in reader:
