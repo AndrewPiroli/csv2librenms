@@ -86,6 +86,8 @@ if __name__ == "__main__":
                 device_info, "cryptoalgo", "v3cryptoalgo", row
             )
         elif row["version"] == "icmponly":
+            device_info.pop("version", None)
+            device_info.update({"snmp_disable":True})
             device_info = update_if_exists(device_info, "os", "os", row)
             device_info = update_if_exists(device_info, "hardware", "hardware", row)
         else:
