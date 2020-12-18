@@ -21,6 +21,11 @@ them via the LibreNMS webgui.
 - **v3cryptopass**: SNMPv3 crypto algorithm (AES, DES)
 - **os**: ICMP only, optional
 - **hardware**: ICMP only, optional
+- **overwite_ip**: Optional
+- **port**: Optional
+- **transport**: Optional
+- **poller_group**: Optional
+- **force_add**: Optional
 
 
 If version is set to v1 or v2c, all v3 options are ignored, they may be left blank or placeholders inserted. If version v3 is selected, v1v2commmunity is ignored. If version does not match v1, v2c, or v3 the entire row is discarded.

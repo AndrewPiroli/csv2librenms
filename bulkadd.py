@@ -91,4 +91,9 @@ if __name__ == "__main__":
         else:
             print(f"FATAL ERROR: snmp version not recognized {row}")
             continue
+        device_info = update_if_exists(device_info, "overwrite_ip", "overwrite_ip", row)
+        device_info = update_if_exists(device_info, "port", "port", row)
+        device_info = update_if_exists(device_info, "transport", "transport", row)
+        device_info = update_if_exists(device_info, "poller_group", "poller_group", row)
+        device_info = update_if_exists(device_info, "force_add", "force_add", row)
         device_add(device_info)
