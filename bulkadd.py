@@ -81,6 +81,11 @@ if __name__ == "__main__":
                     "cryptoalgo": row["v3cryptoalgo"],
                 }
             )
+        elif row["version"] == "icmponly":
+            if ("os" in row) and row["os"] is not "":
+                device_info.update({"os": row["os"]})
+            if ("hardware" in row) and row["hardware"] is not "":
+                device_info.update({"hardware": row["hardware"]})
         else:
             print(f"FATAL ERROR: snmp version not recognized {row}")
             continue
