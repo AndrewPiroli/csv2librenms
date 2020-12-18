@@ -14,6 +14,14 @@ headers = {
 }
 
 
+def update_if_exists(device_info, api_str, csv_header, csv_row):
+    if config.debug_mode:
+        print(f"{device_info=} {api_str=} {csv_header=} {csv_row=}")
+    if csv_header in csv_row and csv_row[csv_header] != "":
+        device_info.update({api_str: csv_row[csv_header]})
+    return device_info
+
+
 def mk_connection():
     connection = None
     connector = HTTPSConnection if config.use_https else HTTPConnection
@@ -65,27 +73,21 @@ if __name__ == "__main__":
     for row in process_csv("data/bulkadd.csv"):
         device_info = {"hostname": row["hostname"], "version": row["version"]}
         if row["version"] in ("v1", "v2c"):
-            device_info.update(
-                {
-                    "community": row["v1v2community"],
-                }
-            )
+            update_if_exists(device_info, "community", "v1v2community", row)
         elif row["version"] == "v3":
-            device_info.update(
-                {
-                    "authlevel": row["v3authlevel"],
-                    "authname": row["v3authname"],
-                    "authpass": row["v3authpass"],
-                    "authalgo": row["v3authalgo"],
-                    "cryptopass": row["v3cryptopass"],
-                    "cryptoalgo": row["v3cryptoalgo"],
-                }
+            device_info = update_if_exists(device_info, "authlevel", "v3authlevel", row)
+            device_info = update_if_exists(device_info, "authname", "v3authname", row)
+            device_info = update_if_exists(device_info, "authpass", "v3authpass", row)
+            device_info = update_if_exists(device_info, "authalgo", "v3authalgo", row)
+            device_info = update_if_exists(
+                device_info, "cryptopass", "v3cryptopass", row
+            )
+            device_info = update_if_exists(
+                device_info, "cryptoalgo", "v3cryptoalgo", row
             )
         elif row["version"] == "icmponly":
-            if ("os" in row) and row["os"] is not "":
-                device_info.update({"os": row["os"]})
-            if ("hardware" in row) and row["hardware"] is not "":
-                device_info.update({"hardware": row["hardware"]})
+            device_info = update_if_exists(device_info, "os", "os", row)
+            device_info = update_if_exists(device_info, "hardware", "hardware", row)
         else:
             print(f"FATAL ERROR: snmp version not recognized {row}")
             continue
