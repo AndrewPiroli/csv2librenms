@@ -103,6 +103,8 @@ if __name__ == "__main__":
     for _ in range(config.num_connections):
         request_process.submit(device_add, next(q_list))
     for row in process_csv("data/bulkadd.csv"):
+        if "hostname" not in row or "version" not in row:
+            continue
         device_info = {"hostname": row["hostname"], "version": row["version"]}
         if row["version"] in ("v1", "v2c"):
             update_if_exists(device_info, "community", "v1v2community", row)
