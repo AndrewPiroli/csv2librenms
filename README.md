@@ -33,7 +33,7 @@ If a certain column is left blank for a given row, it is not included in the req
 
 The only columns that are 100% required are hostname and version
 
-#### User servicable config.py options
+#### User serviceable config.py options
 - **librenms_apikey**: set this to your API key generated in the web interface
 - **librenms_ipaddress**: set this to either the IP or hostname of the server hosting the LibreNMS web interface - do not add the protocol prefix http:// or https://
 - **use_https**: set to True to enable HTTPS
