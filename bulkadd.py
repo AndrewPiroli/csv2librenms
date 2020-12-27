@@ -3,7 +3,9 @@ import csv
 from http.client import HTTPConnection, HTTPSConnection
 import json
 import multiprocessing as mp
+from concurrent.futures import ProcessPoolExecutor
 from queue import Empty as QEmptyException
+from itertools import cycle
 
 # Setup Requests Headers
 headers = {
@@ -92,9 +94,14 @@ def process_csv(csvfile):
 
 
 if __name__ == "__main__":
-    request_q = mp.Queue()
-    request_process = mp.Process(target=device_add, args=(request_q,))
-    request_process.start()
+    # Create a round robin queue system
+    # This lets us reuse a Keep-Alive HTTP connection without another process to keep track of the connection objects for each subprocess
+    # I haven't tested this, so I will reccommend that most people just leave it at 1 connection, but the functionality is there for the brave.
+    manager = mp.Manager()
+    q_list = cycle([manager.Queue() for _ in range(config.num_connections)])
+    request_process = ProcessPoolExecutor(max_workers=config.num_connections)
+    for _ in range(config.num_connections):
+        request_process.submit(device_add, next(q_list))
     for row in process_csv("data/bulkadd.csv"):
         device_info = {"hostname": row["hostname"], "version": row["version"]}
         if row["version"] in ("v1", "v2c"):
@@ -123,6 +130,6 @@ if __name__ == "__main__":
         device_info = update_if_exists(device_info, "transport", "transport", row)
         device_info = update_if_exists(device_info, "poller_group", "poller_group", row)
         device_info = update_if_exists(device_info, "force_add", "force_add", row)
-        request_q.put(device_info)
-    request_q.put("die")
-    request_process.join()
+        next(q_list).put(device_info)
+    for _ in range(config.num_connections * 2):
+        next(q_list).put("die")
