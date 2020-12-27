@@ -13,7 +13,7 @@ them via the LibreNMS webgui.
 - **hostname**: IP/Hostname of device you want to add, required
 - **version**: SNMP version of the device or "icmponly", required - Acceptable values: v1 v2c v3 icmponly
 - **v1v2community**: SNMP community for v1 or v2c
-- **v3authlevel**: SNMPv3 authentication level - Acceptable values: noAuthNoPriv, authNoPriv, authPriv)
+- **v3authlevel**: SNMPv3 authentication level - Acceptable values: noAuthNoPriv, authNoPriv, authPriv
 - **v3authname**: SNMPv3 authentication username
 - **v3authpass**: SNMPv3 authentication password
 - **v3authalgo**: SNMPv3 authentication algorithm - Acceptable values: MD5, SHA
@@ -39,4 +39,4 @@ The only columns that are 100% required are hostname and version
 - **use_https**: set to True to enable HTTPS
 - **disable_tls_cert_check**: set to True to ignore certificate errors when using HTTPS
 - **debug_mode**: set to True to print debug information and send requests to an HTTP reflection service instead of your LibreNMS
-- **num_connections**: EXPIRAMENTAL: set to the number of concurrent connections to use when making API requests, this may speed up the process for large requests, but it is largely untested.
+- **num_connections**: EXPERIMENTAL: set to the number of concurrent connections to use when making API requests, this may speed up the process for large requests, but it is largely untested.
