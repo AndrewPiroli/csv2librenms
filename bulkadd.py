@@ -2,6 +2,8 @@ import config
 import csv
 from http.client import HTTPConnection, HTTPSConnection
 import json
+import multiprocessing as mp
+from queue import Empty as QEmptyException
 
 # Setup Requests Headers
 headers = {
@@ -43,13 +45,33 @@ def mk_connection():
     return connection
 
 
-def device_add(add_request):
-    connection = mk_connection()
-    connection.request("POST", config.api_endpoint, json.dumps(add_request), headers)
-    response = connection.getresponse()
-    data = str(response.read())
-    connection.close()
-    print(f"{response.status} {response.reason} : {data}")
+def device_add(request_q: mp.Queue):
+    connection = None
+    closed = False
+    timeout = 0
+    while True:
+        try:
+            request = request_q.get(timeout=1, block=True)
+            timeout = 0
+        except QEmptyException:
+            timeout += 1
+            if timeout == 90:
+                request = "die"
+            else:
+                continue
+        if request == "die":
+            if connection is not None and closed is False:
+                connection.close()
+            return
+        if connection is None or closed:
+            connection = mk_connection()
+        connection.request("POST", config.api_endpoint, json.dumps(request), headers)
+        response = connection.getresponse()
+        closed = response.isclosed()
+        data = str(response.read().decode())
+        print(f"{response.status} {response.reason} : {data}")
+        if config.debug_mode and closed:
+            print("Connection closed by server: will reopen on next request")
 
 
 def process_csv(csvfile):
@@ -70,6 +92,9 @@ def process_csv(csvfile):
 
 
 if __name__ == "__main__":
+    request_q = mp.Queue()
+    request_process = mp.Process(target=device_add, args=(request_q,))
+    request_process.start()
     for row in process_csv("data/bulkadd.csv"):
         device_info = {"hostname": row["hostname"], "version": row["version"]}
         if row["version"] in ("v1", "v2c"):
@@ -87,7 +112,7 @@ if __name__ == "__main__":
             )
         elif row["version"] == "icmponly":
             device_info.pop("version", None)
-            device_info.update({"snmp_disable":True})
+            device_info.update({"snmp_disable": True})
             device_info = update_if_exists(device_info, "os", "os", row)
             device_info = update_if_exists(device_info, "hardware", "hardware", row)
         else:
@@ -98,4 +123,6 @@ if __name__ == "__main__":
         device_info = update_if_exists(device_info, "transport", "transport", row)
         device_info = update_if_exists(device_info, "poller_group", "poller_group", row)
         device_info = update_if_exists(device_info, "force_add", "force_add", row)
-        device_add(device_info)
+        request_q.put(device_info)
+    request_q.put("die")
+    request_process.join()
