@@ -107,7 +107,7 @@ if __name__ == "__main__":
             continue
         device_info = {"hostname": row["hostname"], "version": row["version"]}
         if row["version"] in ("v1", "v2c"):
-            update_if_exists(device_info, "community", "v1v2community", row)
+            device_info = update_if_exists(device_info, "community", "v1v2community", row)
         elif row["version"] == "v3":
             device_info = update_if_exists(device_info, "authlevel", "v3authlevel", row)
             device_info = update_if_exists(device_info, "authname", "v3authname", row)
