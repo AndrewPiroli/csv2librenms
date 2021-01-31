@@ -7,6 +7,7 @@ from concurrent.futures import ProcessPoolExecutor
 from queue import Empty as QEmptyException
 from itertools import cycle
 
+
 # Setup Requests Headers
 headers = {
     "Content-Type": "application/json",
@@ -65,13 +66,23 @@ def device_add(request_q: mp.Queue):
             if connection is not None and closed is False:
                 connection.close()
             return
-        if connection is None or closed:
-            connection = mk_connection()
-        connection.request("POST", config.api_endpoint, json.dumps(request), headers)
-        response = connection.getresponse()
-        closed = response.isclosed()
-        data = str(response.read().decode())
-        print(f"{response.status} {response.reason} : {data}")
+        try:
+            if connection is None or closed:
+                connection = mk_connection()
+        except Exception as err:
+            e_name = get_full_class_name(err)
+            print(f"device_add:mk_connection Error:  {e_name} {err}")
+        try:
+            connection.request(
+                "POST", config.api_endpoint, json.dumps(request), headers
+            )
+            response = connection.getresponse()
+            closed = response.isclosed()
+            data = str(response.read().decode())
+            print(f"{response.status} {response.reason} : {data}")
+        except Exception as err:
+            e_name = get_full_class_name(err)
+            print(f"device_add Error in connection request or response: {e_name} {err}")
         if config.debug_mode and closed:
             print("Connection closed by server: will reopen on next request")
 
@@ -107,7 +118,9 @@ if __name__ == "__main__":
             continue
         device_info = {"hostname": row["hostname"], "version": row["version"]}
         if row["version"] in ("v1", "v2c"):
-            device_info = update_if_exists(device_info, "community", "v1v2community", row)
+            device_info = update_if_exists(
+                device_info, "community", "v1v2community", row
+            )
         elif row["version"] == "v3":
             device_info = update_if_exists(device_info, "authlevel", "v3authlevel", row)
             device_info = update_if_exists(device_info, "authname", "v3authname", row)
@@ -135,3 +148,10 @@ if __name__ == "__main__":
         next(q_list).put(device_info)
     for _ in range(config.num_connections * 2):
         next(q_list).put("die")
+
+
+def get_full_class_name(obj):
+    module = obj.__class__.__module__
+    if module is None or module == str.__class__.__module__:
+        return obj.__class__.__name__
+    return module + "." + obj.__class__.__name__
