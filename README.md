@@ -18,7 +18,7 @@ them via the LibreNMS webgui.
 - **v3authpass**: SNMPv3 authentication password
 - **v3authalgo**: SNMPv3 authentication algorithm - Acceptable values: MD5, SHA
 - **v3cryptopass**: SNMPv3 crypto password
-- **v3cryptopass**: SNMPv3 crypto algorithm Acceptable values: AES, DES
+- **v3cryptoalgo**: SNMPv3 crypto algorithm Acceptable values: AES, DES
 - **os**: ICMP only, optional
 - **hardware**: ICMP only, optional
 - **overwite_ip**: Optional
