@@ -6,7 +6,7 @@ import multiprocessing as mp
 from concurrent.futures import ProcessPoolExecutor
 from queue import Empty as QEmptyException
 from itertools import cycle
-
+from multiprocessing import set_start_method
 
 # Setup Requests Headers
 headers = {
@@ -105,6 +105,7 @@ def process_csv(csvfile):
 
 
 if __name__ == "__main__":
+    set_start_method("spawn")
     # Create a round robin queue system
     # This lets us reuse a Keep-Alive HTTP connection without another process to keep track of the connection objects for each subprocess
     # I haven't tested this, so I will reccommend that most people just leave it at 1 connection, but the functionality is there for the brave.
