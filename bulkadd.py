@@ -24,7 +24,6 @@ def update_if_exists(device_info, api_str, csv_header, csv_row):
         print(f"{device_info=} {api_str=} {csv_header=} {csv_row=}")
     if csv_header in csv_row and csv_row[csv_header] != "":
         device_info.update({api_str: csv_row[csv_header]})
-    return device_info
 
 
 def mk_connection():
@@ -119,33 +118,33 @@ if __name__ == "__main__":
             continue
         device_info = {"hostname": row["hostname"], "version": row["version"]}
         if row["version"] in ("v1", "v2c"):
-            device_info = update_if_exists(
+            update_if_exists(
                 device_info, "community", "v1v2community", row
             )
         elif row["version"] == "v3":
-            device_info = update_if_exists(device_info, "authlevel", "v3authlevel", row)
-            device_info = update_if_exists(device_info, "authname", "v3authname", row)
-            device_info = update_if_exists(device_info, "authpass", "v3authpass", row)
-            device_info = update_if_exists(device_info, "authalgo", "v3authalgo", row)
-            device_info = update_if_exists(
+            update_if_exists(device_info, "authlevel", "v3authlevel", row)
+            update_if_exists(device_info, "authname", "v3authname", row)
+            update_if_exists(device_info, "authpass", "v3authpass", row)
+            update_if_exists(device_info, "authalgo", "v3authalgo", row)
+            update_if_exists(
                 device_info, "cryptopass", "v3cryptopass", row
             )
-            device_info = update_if_exists(
+            update_if_exists(
                 device_info, "cryptoalgo", "v3cryptoalgo", row
             )
         elif row["version"] == "icmponly":
             device_info.pop("version", None)
             device_info.update({"snmp_disable": True})
-            device_info = update_if_exists(device_info, "os", "os", row)
-            device_info = update_if_exists(device_info, "hardware", "hardware", row)
+            update_if_exists(device_info, "os", "os", row)
+            update_if_exists(device_info, "hardware", "hardware", row)
         else:
             print(f"FATAL ERROR: snmp version not recognized {row}")
             continue
-        device_info = update_if_exists(device_info, "overwrite_ip", "overwrite_ip", row)
-        device_info = update_if_exists(device_info, "port", "port", row)
-        device_info = update_if_exists(device_info, "transport", "transport", row)
-        device_info = update_if_exists(device_info, "poller_group", "poller_group", row)
-        device_info = update_if_exists(device_info, "force_add", "force_add", row)
+        update_if_exists(device_info, "overwrite_ip", "overwrite_ip", row)
+        update_if_exists(device_info, "port", "port", row)
+        update_if_exists(device_info, "transport", "transport", row)
+        update_if_exists(device_info, "poller_group", "poller_group", row)
+        update_if_exists(device_info, "force_add", "force_add", row)
         next(q_list).put(device_info)
     for _ in range(config.num_connections * 2):
         next(q_list).put("die")
