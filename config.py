@@ -2,7 +2,7 @@ librenms_apikey = "LIBRENMS API KEY"
 librenms_ipaddress = "LIBRENMS IP or DNS NAME"
 use_https = False
 disable_tls_cert_check = False
-debug_mode = True
+debug_mode = False
 
 # Advanced users only - leave at default = 1
 num_connections = 1
