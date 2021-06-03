@@ -72,19 +72,37 @@ def device_add(request_q: mp.Queue):
             e_name = get_full_class_name(err)
             print(f"device_add:mk_connection Error:  {e_name} {err}")
         try:
-            connection.request(
-                "POST", config.api_endpoint, json.dumps(request), headers
-            )
-            response = connection.getresponse()
-            closed = response.isclosed()
-            data = str(response.read().decode())
-            print(f"{response.status} {response.reason} : {data}")
+            response, closed, data = api_request(endpoint=config.api_endpoint, connection=connection, method="POST", request=request)
         except Exception as err:
             e_name = get_full_class_name(err)
             print(f"device_add Error in connection request or response: {e_name} {err}")
         if config.debug_mode and closed:
             print("Connection closed by server: will reopen on next request")
 
+def api_request(endpoint, connection, method, request):
+    if not isinstance(endpoint, str):
+        raise TypeError("endpoint must be a str object")
+    if not isinstance(connection, HTTPConnection):
+        raise TypeError("connection must be a valid http.client.HTTPConnection")
+    if not isinstance(method, str) or method not in ("POST", "PATCH"):
+        raise TypeError("method must be \"POST\" or \"PATCH\"")
+    if not isinstance(request, dict):
+        raise TypeError("request must be a dict")
+    response, closed, data = None, True, None
+    try:
+        connection.request(
+            "POST", config.api_endpoint, json.dumps(request), headers
+        )
+        response = connection.getresponse()
+        closed = response.isclosed()
+        data = str(response.read().decode())
+        print(f"{response.status} {response.reason} : {data}")
+    except Exception as err:
+        e_name = get_full_class_name(err)
+        print(f"device_add Error in connection request or response: {e_name} {err}")
+    finally:
+        return (response, closed, data)
+    
 
 def process_csv(csvfile):
     with open(csvfile) as device_list:
