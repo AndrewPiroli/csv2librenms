@@ -91,7 +91,7 @@ def api_request(endpoint, connection, method, request):
     response, closed, data = None, True, None
     try:
         connection.request(
-            "POST", config.api_endpoint, json.dumps(request), headers
+            method, config.api_endpoint, json.dumps(request), headers
         )
         response = connection.getresponse()
         closed = response.isclosed()
